@@ -78,6 +78,32 @@ nvar <- 7
 inames <- c("comprimento da asa","largura da asa","comprimento do 3 palpo","largura do 3 palpo","comprimento do 2 palpo","comprimento do 12 segmento da antena", "comprimento do 13 segmento da antena")
 dadosd <- dados[,2:8]
 ```
+ 
+ Medidas Resumo
+ 
+\begin{table}[ht]
+\centering
+\begin{tabular}{rlrrrrrrrr}
+  \hline
+Variável & Especie & Média & DP & Var & CV & Mínimo & Mediana & Máximo & n \\ 
+  \hline
+  C.Asa & Carteri & 99,34 & 5,59 & 31,29 & 5,63 &  82 & 99,00 & 112 &  35 \\ 
+   & Torrens & 96,46 & 6,38 & 40,73 & 6,62 &  85 & 95,00 & 109 &  35 \\ 
+  L.Asa & Carteri & 43,74 & 5,08 & 25,78 & 11,61 &  19 & 45,00 &  50 &  35 \\ 
+   & Torrens & 42,91 & 2,74 & 7,49 & 6,38 &  38 & 44,00 &  49 &  35 \\ 
+  C3p   & Carteri & 39,31 & 2,84 & 8,05 & 7,21 &  33 & 39,00 &  44 &  35 \\ 
+   & Torrens & 35,37 & 2,20 & 4,83 & 6,21 &  31 & 36,00 &  39 &  35 \\ 
+  L3p   & Carteri & 14,66 & 1,64 & 2,70 & 11,22 &  11 & 15,00 &  19 &  35 \\ 
+   & Torrens & 14,51 & 1,84 & 3,37 & 12,66 &  11 & 14,00 &  18 &  35 \\ 
+  C4p   & Carteri & 30,00 & 4,61 & 21,29 & 15,38 &  20 & 31,00 &  38 &  35 \\ 
+   & Torrens & 25,63 & 2,50 & 6,24 & 9,75 &  21 & 26,00 &  31 &  35 \\ 
+  C12a  & Carteri & 9,66 & 1,26 & 1,58 & 13,04 &   6 & 10,00 &  12 &  35 \\ 
+   & Torrens & 9,57 & 0,92 & 0,84 & 9,58 &   8 & 9,00 &  13 &  35 \\ 
+  C13a  & Carteri & 9,37 & 1,09 & 1,18 & 11,60 &   7 & 9,00 &  11 &  35 \\ 
+   & Torrens & 9,71 & 0,89 & 0,80 & 9,20 &   8 & 10,00 &  13 &  35 \\ 
+   \hline
+\end{tabular}
+\end{table}
 
 
 ```{r, plotanto os boxplots, echo=FALSE, fig.height=5, fig.cap="BoxPlots"}
@@ -234,29 +260,6 @@ medresumo <- rbind(medados1, medados2, medados3, medados4, medados5, medados6, m
 xtable(medresumo)
 ```
 
-\begin{table}[ht]
-\centering
-\begin{tabular}{rlrrrrrrrr}
-  \hline
-Variável & Especie & Média & DP & Var & CV & Mínimo & Mediana & Máximo & n \\ 
-  \hline
-  C.Asa & Carteri & 99,34 & 5,59 & 31,29 & 5,63 &  82 & 99,00 & 112 &  35 \\ 
-   & Torrens & 96,46 & 6,38 & 40,73 & 6,62 &  85 & 95,00 & 109 &  35 \\ 
-  L.Asa & Carteri & 43,74 & 5,08 & 25,78 & 11,61 &  19 & 45,00 &  50 &  35 \\ 
-   & Torrens & 42,91 & 2,74 & 7,49 & 6,38 &  38 & 44,00 &  49 &  35 \\ 
-  C3p   & Carteri & 39,31 & 2,84 & 8,05 & 7,21 &  33 & 39,00 &  44 &  35 \\ 
-   & Torrens & 35,37 & 2,20 & 4,83 & 6,21 &  31 & 36,00 &  39 &  35 \\ 
-  L3p   & Carteri & 14,66 & 1,64 & 2,70 & 11,22 &  11 & 15,00 &  19 &  35 \\ 
-   & Torrens & 14,51 & 1,84 & 3,37 & 12,66 &  11 & 14,00 &  18 &  35 \\ 
-  C4p   & Carteri & 30,00 & 4,61 & 21,29 & 15,38 &  20 & 31,00 &  38 &  35 \\ 
-   & Torrens & 25,63 & 2,50 & 6,24 & 9,75 &  21 & 26,00 &  31 &  35 \\ 
-  C12a  & Carteri & 9,66 & 1,26 & 1,58 & 13,04 &   6 & 10,00 &  12 &  35 \\ 
-   & Torrens & 9,57 & 0,92 & 0,84 & 9,58 &   8 & 9,00 &  13 &  35 \\ 
-  C13a  & Carteri & 9,37 & 1,09 & 1,18 & 11,60 &   7 & 9,00 &  11 &  35 \\ 
-   & Torrens & 9,71 & 0,89 & 0,80 & 9,20 &   8 & 10,00 &  13 &  35 \\ 
-   \hline
-\end{tabular}
-\end{table}
 
 ```{r, graficos quantis-quantis com envelopes para cada Especie, include=FALSE, echo=FALSE}
 # Especie Torrens
@@ -368,8 +371,11 @@ aux <- summary.aov(m.ajuste)
 \end{table}
 
 ```{r, Obtendo estimativa dos parametros do modelo, echo=FALSE, include = FALSE}
-fit.model <- lm(as.matrix(dados[2:8]) ~ Especie)
+especief <- especie
+especief <- ifelse(especief == "Torrens",0,1)
+fit.model <- lm(as.matrix(dados[2:8]) ~ especief)
 fit1 <- summary(fit.model)
+fit1
 ```
 
 \begin{table}[ht]
@@ -493,7 +499,9 @@ m.residuo <- m.residuo/(sqrt((matrix(auxres,70,7))%*%diag(diag(m.Sigma.P)))) ###
 #m.residuo <- m.residuo%*%solve(diag(diag(m.Sigma.P)))
 #m.residuo <- m.residuo/sqrt(1-matrix(auxres,35,7))
 m.ajustado <- fitted.values(m.ajuste)
+```
 
+```{r, echo=FALSE}
 # Comprimento da Asa
 par(mfrow =c(2,2))
 plot(m.residuo[,1],ylim=c(min(-3,min(m.residuo[,1])),max(3,max(m.residuo[,1]))),xlab="índice",ylab="resíduo studentizado")
@@ -511,7 +519,7 @@ hist(m.residuo[,1],probability=TRUE,xlab="resíduo studentizado",main="",ylab="d
 qqPlot((m.residuo[,1]),dist="norm",mean=0,sd=1,col.lines=1,grid="FALSE",xlab="quantil da N(0,1)",ylab=paste("quantil da distribuição do resíduo studentizado"),cex=1.2,id.cex=1.2)
 ```
 
-```{r, fig.height=5, echo=FALSE}
+```{r, echo=FALSE}
 # Largura da Asa
 par(mfrow =c(2,2))
 plot(m.residuo[,2],ylim=c(min(-3,min(m.residuo[,2])),max(3,max(m.residuo[,2]))),xlab="índice",ylab="resíduo studentizado")
@@ -529,7 +537,7 @@ hist(m.residuo[,2],probability=TRUE,xlab="resíduo studentizado",main="",ylab="d
 qqPlot((m.residuo[,2]),dist="norm",mean=0,sd=1,col.lines=1,grid="FALSE",xlab="quantil da N(0,1)",ylab=paste("quantil da distribuição do resíduo studentizado"),cex=1.2,id.cex=1.2)
 ```
 
-```{r, fig.height=5, echo=FALSE}
+```{r, echo=FALSE}
 # Comprimento do 3 Palpo
 par(mfrow =c(2,2))
 plot(m.residuo[,3],ylim=c(min(-3,min(m.residuo[,3])),max(3,max(m.residuo[,3]))),xlab="índice",ylab="resíduo studentizado")
@@ -547,7 +555,7 @@ hist(m.residuo[,3],probability=TRUE,xlab="resíduo studentizado",main="",ylab="d
 qqPlot((m.residuo[,3]),dist="norm",mean=0,sd=1,col.lines=1,grid="FALSE",xlab="quantil da N(0,1)",ylab=paste("quantil da distribuição do resíduo studentizado"),cex=1.2,id.cex=1.2)
 ```
 
-```{r, fig.height=5, echo=FALSE}
+```{r, echo=FALSE}
 # Largura do 3 Palpo
 par(mfrow =c(2,2))
 plot(m.residuo[,4],ylim=c(min(-3,min(m.residuo[,4])),max(3,max(m.residuo[,4]))),xlab="índice",ylab="resíduo studentizado")
@@ -565,7 +573,7 @@ hist(m.residuo[,4],probability=TRUE,xlab="resíduo studentizado",main="Histogram
 qqPlot((m.residuo[,4]),dist="norm",mean=0,sd=1,col.lines=1,grid="FALSE",xlab="quantil da N(0,1)",ylab=paste("quantil da distribuição do resíduo studentizado"),cex=1.2,id.cex=1.2)
 ```
 
-```{r, fig.height=5, echo=FALSE}
+```{r, echo=FALSE}
 # Comprimento do 2 Palpo
 par(mfrow =c(2,2))
 plot(m.residuo[,5],ylim=c(min(-3,min(m.residuo[,5])),max(3,max(m.residuo[,5]))),xlab="índice",ylab="resíduo studentizado")
@@ -583,7 +591,7 @@ hist(m.residuo[,5],probability=TRUE,xlab="resíduo studentizado",main="Histogram
 qqPlot((m.residuo[,5]),dist="norm",mean=0,sd=1,col.lines=1,grid="FALSE",xlab="quantil da N(0,1)",ylab=paste("quantil da distribuição do resíduo studentizado"),cex=1.2,id.cex=1.2)
 ```
 
-```{r, fig.height=5, echo=FALSE}
+```{r, echo=FALSE}
 # Comprimento do 12segmento da antena
 par(mfrow =c(2,2))
 plot(m.residuo[,6],ylim=c(min(-3,min(m.residuo[,6])),max(3,max(m.residuo[,6]))),xlab="índice",ylab="resíduo studentizado")
@@ -601,7 +609,7 @@ hist(m.residuo[,6],probability=TRUE,xlab="resíduo studentizado",main="Histogram
 qqPlot((m.residuo[,6]),dist="norm",mean=0,sd=1,col.lines=1,grid="FALSE",xlab="quantil da N(0,1)",ylab=paste("quantil da distribuição do resíduo studentizado"),cex=1.2,id.cex=1.2)
 ```
 
-```{r, fig.height=5, echo=FALSE}
+```{r, echo=FALSE}
 # Comprimento do 13 segmento da antena
 par(mfrow =c(2,2))
 plot(m.residuo[,7],ylim=c(min(-3,min(m.residuo[,7])),max(3,max(m.residuo[,7]))),xlab="índice",ylab="resíduo studentizado")
@@ -618,139 +626,4 @@ hist(m.residuo[,7],probability=TRUE,xlab="resíduo studentizado",main="Histogram
 
 qqPlot((m.residuo[,7]),dist="norm",mean=0,sd=1,col.lines=1,grid="FALSE",xlab="quantil da N(0,1)",ylab=paste("quantil da distribuição do resíduo studentizado"),cex=1.2,id.cex=1.2)
 
-```
-
-\newpage
-
-##QUESTÃO 2
-
-
-```{r, análise de Componentes Principais via Matriz de Correlações, echo=FALSE}
-dadosaux <- dados
-p <- ncol(dados[,2:8])
-m.cor <- cor(dados[2:8])
-aut.val <-  eigen(m.cor)$values
-aut.vec <- (eigen(m.cor)$vectors)
-m.aut.val <- t(matrix(((aut.val)),p,p))
-result.cp.cor <- princomp(dados[2:8],cor=TRUE)
-corr.cp.cor <- aut.vec*sqrt(m.aut.val)
-summary(result.cp.cor) # usamos só 3 componentes, que já cobre quase 77% da variância
-screeplot(result.cp.cor,type=c("lines"),main="autovalores",cex=1.2,cex.lab=1.2,cex.main=1.2)
-
-cp1 <-  cbind((result.cp.cor$scores)[,1])
-cp2 <-  cbind((result.cp.cor$scores)[,2])
-cp3 <- cbind((result.cp.cor$scores)[,3])
-
-
-# dispersão entre as componentes
-mycolors <- c("red", "blue")
-par(mfrow=c(1,3))
-plot(cp2,cp1, col=mycolors[factor(Especie)], cex=1.2,ylim=c(-6,6),xlim=c(-5,5), pch=16)
-
-plot(cp1,cp3, col=mycolors[factor(Especie)], cex=1.2,ylim=c(-3,3),xlim=c(-5,5), pch=16)
-
-plot(cp2,cp3, col=mycolors[factor(Especie)], cex=1.2,ylim=c(-3,3),xlim=c(-4,6), pch=16)
-
-#especie <- as.character(dadosaux[,1]) 
-#plot(data.frame(cp1,cp2,cp3), col=mycolors[factor(especie)], pch = 16)
-```
-
-```{r, fig.height=5,  echo=FALSE}
-# Por grupo
-par(mfrow=c(1,3))
-boxplot(cp1~especie,cex=1.2,cex.lab=1.2,xlab="CP1")
-boxplot(cp2~especie,cex=1.2,cex.lab=1.2,xlab="CP2")
-boxplot(cp3~especie,cex=1.2,cex.lab=1.2,xlab="CP3")
-```
-
-```{r, fig.height=5, echo=FALSE}
-par(mfrow=c(3,2))
-hist(cp1[especie=="Torrens"],probability=TRUE,main="CP1",xlab="",ylab="")
-hist(cp1[especie=="Carteri"],probability=TRUE,main="CP1",xlab="",ylab="")
-hist(cp2[especie=="Torrens"],probability=TRUE,main="CP2",xlab="",ylab="")
-hist(cp2[especie=="Carteri"],probability=TRUE,main="CP2",xlab="",ylab="")
-hist(cp3[especie=="Torrens"],probability=TRUE,main="CP3",xlab="",ylab="")
-hist(cp3[especie=="Carteri"],probability=TRUE,main="CP3",xlab="",ylab="")
-```
-
-```{r, fig.height=8, echo=FALSE}
-par(mfrow=c(3,2))
-qqPlot(scale(cp1[especie=="Torrens"]),dist="norm",mean=0,sd=1,col.lines=1,grid="FALSE",xlab="quantil da N(0,1)",ylab="CP1",cex=1.2,id.cex=1.2,main="Carteri")
-qqPlot(scale(cp1[especie=="Carteri"]),dist="norm",mean=0,sd=1,col.lines=1,grid="FALSE",xlab="quantil da N(0,1)",ylab="CP1",cex=1.2,id.cex=1.2,main="Torrens")
-
-qqPlot(scale(cp2[especie=="Torrens"]),dist="norm",mean=0,sd=1,col.lines=1,grid="FALSE",xlab="quantil da N(0,1)",ylab="CP2",cex=1.2,id.cex=1.2,main="Carteri")
-qqPlot(scale(cp2[especie=="Carteri"]),dist="norm",mean=0,sd=1,col.lines=1,grid="FALSE",xlab="quantil da N(0,1)",ylab="CP2",cex=1.2,id.cex=1.2,main="Torrens")
-
-qqPlot(scale(cp3[especie=="Torrens"]),dist="norm",mean=0,sd=1,col.lines=1,grid="FALSE",xlab="quantil da N(0,1)",ylab="CP3",cex=1.2,id.cex=1.2,main="Carteri")
-qqPlot(scale(cp3[especie=="Carteri"]),dist="norm",mean=0,sd=1,col.lines=1,grid="FALSE",xlab="quantil da N(0,1)",ylab="CP3",cex=1.2,id.cex=1.2,main="Torrens")
-```
-
-``` {r, análise Residual das componentes principais, echo=FALSE}
-par(mfrow = c(1,1))
-#biplot.psych {psych}
-especief<-dados[,1]
-# Componente 1
-fit.model1 <- lm(cp1~especief)
-m.residuo1 <- fit.model1$residuals
-summary(fit.model1)
-# Componente 2
-fit.model2 <- lm(cp2~especief)
-m.residuo2 <- fit.model2$residuals
-# Componente 3
-fit.model3 <- lm(cp3~especief)
-m.residuo3 <- fit.model3$residuals
-
-par(mfrow =c(1,1))
-plot(m.residuo,ylim=c(min(-3,min(m.residuo1)),max(3,max(m.residuo1))),xlab="índice",ylab="resíduo studentizado", main = "Residuos do modelo com a Componente 1")
-abline(-2,0,lty=2)
-abline(2,0,lty=2)
-abline(0,0,lty=2)
-```
-
-```{r, fig.height=5, echo=FALSE}
-plot(m.residuo,ylim=c(min(-3,min(m.residuo2)),max(3,max(m.residuo2))),xlab="índice",ylab="resíduo studentizado")
-abline(-2,0,lty=2)
-abline(2,0,lty=2)
-abline(0,0,lty=2)
-```
-
-```{r, fig.height=5, echo=FALSE}
-plot(m.residuo,ylim=c(min(-3,min(m.residuo3)),max(3,max(m.residuo3))),xlab="índice",ylab="resíduo studentizado")
-abline(-2,0,lty=2)
-abline(2,0,lty=2)
-abline(0,0,lty=2)
-```
-
-```{r, fig.height=5, echo=FALSE}
-par(mfrow=c(1,2))
-hist(m.residuo1,probability=TRUE,xlab="resíduo studentizado",main="Histograma dos resíduos",ylab="densidade")
-
-qqPlot((m.residuo1),dist="norm",mean=0,sd=1,col.lines=1,grid="FALSE",xlab="quantil da N(0,1)",ylab=paste("quantil da distribuição do resíduo studentizado"),cex=1.2,id.cex=1.2)
-```
-
-```{r, fig.height=5, echo=FALSE}
-par(mfrow=c(1,2))
-hist(m.residuo2,probability=TRUE,xlab="resíduo studentizado",main="Histograma dos resíduos",ylab="densidade")
-
-qqPlot((m.residuo2),dist="norm",mean=0,sd=1,col.lines=1,grid="FALSE",xlab="quantil da N(0,1)",ylab=paste("quantil da distribuição do resíduo studentizado"),cex=1.2,id.cex=1.2)
-```
-
-```{r, fig.height=5, echo=FALSE}
-par(mfrow=c(1,2))
-hist(m.residuo3,probability=TRUE,xlab="resíduo studentizado",main="Histograma dos resíduos",ylab="densidade")
-
-qqPlot((m.residuo3),dist="norm",mean=0,sd=1,col.lines=1,grid="FALSE",xlab="quantil da N(0,1)",ylab=paste("quantil da distribuição do resíduo studentizado"),cex=1.2,id.cex=1.2)
-
-```
-
-\newpage
-
-```{r, echo=FALSE, fig.width=7, fig.height=4}
-par(mfrow=c(1,3))
-bla <-NULL
-bla[dados[,1]=="Torrens"]<-"To"
-bla[dados[,1]=="Carteri"]<-"Ca"
-biplot(result.cp.cor,xlabs=bla)
-biplot(result.cp.cor,c(1,3),xlabs=bla)
-biplot(result.cp.cor,2:3,xlabs=bla)
 ```
