@@ -83,31 +83,24 @@ dadosd <- dados[,2:8]
 ```{r, plotanto os boxplots, echo=FALSE, fig.height=5, fig.cap="BoxPlots"}
 boxCAsa <- ggplot(dados, aes(Especie, C.Asa, group = Especie)) + 
   geom_boxplot() +theme_classic() +  scale_y_continuous("C.Asa")
-#boxCAsa
 
 boxLAsa <- ggplot(dados, aes(Especie, L.Asa, group = Especie)) + 
   geom_boxplot() +theme_classic() +  scale_y_continuous("L.Asa")
-#boxLAsa
 
 boxC3p <- ggplot(dados, aes(Especie, C3p, group = Especie)) + 
   geom_boxplot() +theme_classic() +  scale_y_continuous("C3p")
-#boxC3p
 
 boxL3p <- ggplot(dados, aes(Especie, L3p, group = Especie)) + 
   geom_boxplot() +theme_classic() +  scale_y_continuous("L3p")
-#boxL3p
 
 boxC4p <- ggplot(dados, aes(Especie, C4p, group = Especie)) + 
   geom_boxplot() +theme_classic() +  scale_y_continuous("C4p")
-#boxC4p
 
 boxC12a <- ggplot(dados, aes(Especie, C12a, group = Especie)) + 
   geom_boxplot() +theme_classic() +  scale_y_continuous("C12a")
-#boxC12a
 
 boxC13a <-  ggplot(dados, aes(Especie, C13a, group = Especie)) + 
   geom_boxplot() +theme_classic() +  scale_y_continuous("C13a")
-#boxC13a
 
 grid.arrange(boxCAsa, boxLAsa, boxC3p, boxL3p, boxC4p, boxC12a, boxC13a, nrow=3, ncol=3)
  
