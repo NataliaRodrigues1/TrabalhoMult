@@ -56,8 +56,11 @@ Ricardo\break
 
 \doublespace
 
-#INTRODUÇÃO
+#Introdução
 
+  Os dados foram obtidos do arquivo moscas.txt, extraído do site http://www.ime.unicamp.br/~cnaber/Moscas.txt. Este se refere a sete variáveis medidas em duas espécies das moscas chamadas bitting fly (Leptoconops carteri e Leptoconops torrens), sendo elas espécie (0 - Leptoconops torrens e 1- Leptoconops carteri), comprimento da asa, largura da asa, comprimento do terceiro palpo, largura do terceiro palpo, comprimento do quarto palpo, comprimento do 12º segmento da antena e comprimento do 13º segmento da antena. Para ser mais eficiente, renomearemos essas variáveis como sendo: Especie (0 - torrens e 1- carteri), C.Asa, L.Asa, C3p, L3p, C4p, C12a e C13a, respectivamente.
+
+ Estas duas espécies são tão semelhantes (Johson e Wichern (2007)) que chegaram a ser consideradas, pelos pesquisadores, como uma uníca espécie. Sendo assim, objetivo do estudo é comparar as duas espécies de moscas em relação as variáveis citadas acima para saber se há diferença entre esses dois grupos e, se houver, em que variáveis reside(m) essa(s) diferença(s).
 
 ```{r, lendo os dados, echo=FALSE, warning=FALSE, message=FALSE}
 library(car)
@@ -70,17 +73,55 @@ library(GGally)
 setwd("C:/Users/naatr/Documents/Análise Multivariada/Trabalho/Parte1/TrabalhoMultParte1")
 dados <- read.table("moscas.csv", header = TRUE, sep = ";")
 attach(dados)
-Especie <- ifelse( Especie == "Torrens", 0, 1)
 especie <- dados[,1]
+Especie <- ifelse(Especie == "Torrens", 0, 1)
 n <- nrow(dados)
 mx <- as.matrix(dados[,2:8])
 nvar <- 7
 inames <- c("comprimento da asa","largura da asa","comprimento do 3 palpo","largura do 3 palpo","comprimento do 2 palpo","comprimento do 12 segmento da antena", "comprimento do 13 segmento da antena")
 dadosd <- dados[,2:8]
 ```
- 
- Medidas Resumo
- 
+
+#Análise Descritiva
+
+Na tabela 1, são apresentadas as medidas resumos das variáveis presentes no banco de dados, separadas por espécie. É possível observar que as diferenças entre as médias dos grupos para as variáveis L.Asa, L3p, C12a e C13a diferem em menos de 1 ponto, enquanto para as variáveis C.Asa, C3p e C4p essa diferença é de 2,88 , 3,94 e 3,37 respectivamente . Para os desvios padrões também observamos que para as variáveis C.Asa, C3p, L3p C12a e C13a a diferença entre os grupos é de menos de 1 ponto enquanto para L.Asa e C4p essa diferença é de 2,32 e 2,11 respectivamente.
+
+\newpage
+
+```{r, medidas resumo, echo=FALSE, include = FALSE}
+## Comprimento da Asa
+datadados1 <- data.frame(C.Asa,especie)
+medados1 <- ddply(datadados1,.(especie),summarise,media=mean(C.Asa),dp=sqrt(var(C.Asa)),vari=var(C.Asa),cv=100*((sqrt(var(C.Asa))/mean(C.Asa))),minimo=min(C.Asa),mediana=quantile(C.Asa,0.5),maximo=max(C.Asa),n=length(C.Asa))
+medados1
+##Largura da Asa
+datadados2 <- data.frame(L.Asa,especie)
+medados2 <- ddply(datadados2,.(especie),summarise,media=mean(L.Asa),dp=sqrt(var(L.Asa)),vari=var(L.Asa),cv=100*((sqrt(var(L.Asa))/mean(L.Asa))),minimo=min(L.Asa),mediana=quantile(L.Asa,0.5),maximo=max(L.Asa),n=length(L.Asa))
+medados2
+# Comprimento do 3 palpo
+datadados3 <- data.frame(C3p,especie)
+medados3 <- ddply(datadados3,.(especie),summarise,media=mean(C3p),dp=sqrt(var(C3p)),vari=var(C3p),cv=100*((sqrt(var(C3p))/mean(C3p))),minimo=min(C3p),mediana=quantile(C3p,0.5),maximo=max(C3p),n=length(C3p))
+medados3
+# Largura do 3 palpo
+datadados4 <- data.frame(L3p,especie)
+medados4 <- ddply(datadados4,.(especie),summarise,media=mean(L3p),dp=sqrt(var(L3p)),vari=var(L3p),cv=100*((sqrt(var(L3p))/mean(L3p))),minimo=min(L3p),mediana=quantile(L3p,0.5),maximo=max(L3p),n=length(L3p))
+medados4
+# Comprimento do 2 palpo
+datadados5 <- data.frame(C4p,especie)
+medados5 <- ddply(datadados5,.(especie),summarise,media=mean(C4p),dp=sqrt(var(C4p)),vari=var(C4p),cv=100*((sqrt(var(C4p))/mean(C4p))),minimo=min(C4p),mediana=quantile(C4p,0.5),maximo=max(C4p),n=length(C4p))
+medados5
+# Comprimento do 12 segmento de antena
+datadados6 <- data.frame(C12a,especie)
+medados6 <- ddply(datadados6,.(especie),summarise,media=mean(C12a),dp=sqrt(var(C12a)),vari=var(C12a),cv=100*((sqrt(var(C12a))/mean(C12a))),minimo=min(C12a),mediana=quantile(C12a,0.5),maximo=max(C12a),n=length(C12a))
+medados6
+# Comprimento do 13 segmento da antena
+datadados7 <- data.frame(C13a,especie)
+medados7 <- ddply(datadados7,.(especie),summarise,media=mean(C13a),dp=sqrt(var(C13a)),vari=var(C13a),cv=100*((sqrt(var(C13a))/mean(C13a))),minimo=min(C13a),mediana=quantile(C13a,0.5),maximo=max(C13a),n=length(C13a))
+medados7
+
+medresumo <- rbind(medados1, medados2, medados3, medados4, medados5, medados6, medados7)
+xtable(medresumo)
+```
+
 \begin{table}[ht]
 \centering
 \begin{tabular}{rlrrrrrrrr}
@@ -89,22 +130,120 @@ Variável & Especie & Média & DP & Var & CV & Mínimo & Mediana & Máximo & n \
   \hline
   C.Asa & Carteri & 99,34 & 5,59 & 31,29 & 5,63 &  82 & 99,00 & 112 &  35 \\ 
    & Torrens & 96,46 & 6,38 & 40,73 & 6,62 &  85 & 95,00 & 109 &  35 \\ 
+  \\
   L.Asa & Carteri & 43,74 & 5,08 & 25,78 & 11,61 &  19 & 45,00 &  50 &  35 \\ 
    & Torrens & 42,91 & 2,74 & 7,49 & 6,38 &  38 & 44,00 &  49 &  35 \\ 
+  \\
   C3p   & Carteri & 39,31 & 2,84 & 8,05 & 7,21 &  33 & 39,00 &  44 &  35 \\ 
    & Torrens & 35,37 & 2,20 & 4,83 & 6,21 &  31 & 36,00 &  39 &  35 \\ 
+  \\
   L3p   & Carteri & 14,66 & 1,64 & 2,70 & 11,22 &  11 & 15,00 &  19 &  35 \\ 
    & Torrens & 14,51 & 1,84 & 3,37 & 12,66 &  11 & 14,00 &  18 &  35 \\ 
+  \\
   C4p   & Carteri & 30,00 & 4,61 & 21,29 & 15,38 &  20 & 31,00 &  38 &  35 \\ 
    & Torrens & 25,63 & 2,50 & 6,24 & 9,75 &  21 & 26,00 &  31 &  35 \\ 
+  \\
   C12a  & Carteri & 9,66 & 1,26 & 1,58 & 13,04 &   6 & 10,00 &  12 &  35 \\ 
    & Torrens & 9,57 & 0,92 & 0,84 & 9,58 &   8 & 9,00 &  13 &  35 \\ 
+  \\
   C13a  & Carteri & 9,37 & 1,09 & 1,18 & 11,60 &   7 & 9,00 &  11 &  35 \\ 
    & Torrens & 9,71 & 0,89 & 0,80 & 9,20 &   8 & 10,00 &  13 &  35 \\ 
    \hline
 \end{tabular}
 \end{table}
 
+	Na figura 1, é apresentado o gráfico de dispersão entre as variáveis de interesse para ambos os grupos. Pode-se notar que, em geral, as variáveis apresentam valores menores para a espécie Torrens em comparação com a espécie Carteri. Dois exemplos disso são os gráfico entre as variáveis C4p e L.Asa e C.Asa e Cp3, que concentram quase todos os pontos referentes à espécie Carteri em uma região densa acima da concentração de pontos referentes à espécie Torrens.
+	Os gráficos também nos dão indícios de associações, por grupo, entre as variáveis os quais podem sem comprovados ou refutados pela tabela 2, a qual apresenta uma matriz de covariancias (parte triangular inferior) e correlações (parte triangular superior) entre todas as características de interesse, para cada grupo.
+	Podemos notar, por exemplo, que para as variáveis C.Asa e C3p o grafico mostra que para a espécie Cartéri os dados aprensentam uma determinada associação linear que é comprovada pela tabela 2 onde vemos que a correlação entre elas é de 0,62, enquanto para Torrens a dispersão não parece ter uma associação significativa, o que é, novamente comprovado pela tabela 2 que nos mostra que a correlação dessas caractrísticas para essa espécie é de apenas 0,17. As dispersões entre C.Asa e L.Asa e C12a e C13a aparentam ter alta associação linear para ambos os grupos, o que é verificado quando, na tabela 2, vemos que os valores das correlações entre tais variáveis para Torrens e Carteri são, respectivamente, 0,67 , 0,61 , 0,78 e 0,87.
+
+
+```{r, histogramas, echo=FALSE, include=FALSE}
+
+histC.Asa <- ggplot(dados,aes(C.Asa))+geom_histogram(breaks=seq(80, 115, by=5), color="black", fill="white")+facet_grid(~Especie)+theme_bw()
+
+histL.Asa <- ggplot(dados,aes(L.Asa))+geom_histogram(breaks=seq(15, 50, by=2), color="black", fill="white")+facet_grid(~Especie)+theme_bw()
+
+histC3p <- ggplot(dados,aes(x=C3p))+geom_histogram(breaks=seq(30, 45, by=2), color="black", fill="white")+facet_grid(~Especie)+theme_bw()
+
+histL3p <- ggplot(dados,aes(x=L3p))+geom_histogram(breaks=seq(10, 20, by=2), color="black", fill="white")+facet_grid(~Especie)+theme_bw()
+
+histC4p <- ggplot(dados,aes(x=C4p))+geom_histogram(breaks=seq(20, 40, by=2), color="black", fill="white")+facet_grid(~Especie)+theme_bw()
+
+histC12a <- ggplot(dados,aes(x=C12a))+geom_histogram(breaks=seq(0, 15, by=2), color="black", fill="white")+facet_grid(~Especie)+theme_bw()
+
+histC13a <- ggplot(dados,aes(x=C13a))+geom_histogram(breaks=seq(5, 15, by=2), color="black", fill="white")+facet_grid(~Especie)+theme_bw()
+
+grid.arrange(histC.Asa,histL.Asa,histC3p,histL3p,histC4p,histC12a,histC13a,nrow=4,ncol=2)
+
+# Especie Torrens
+#par(mfrow=c(3,3))
+#for (j in 1:nvar)
+#{
+#  hist(dadosd[especie == "Torrens",j],xlab=inames[j],ylab="densidade",main="Torrens",probability=TRUE,cex=1.3,cex.lab=1.3,cex.axis=1.3)
+#}
+# Especie Carteri
+#par(mfrow =c(2,4))
+#for (j in 1:nvar)
+#{
+# hist(dadosd[especie == "Carteri",j],xlab = inames[j],ylab="densidade",main = "Carteri",probability = TRUE,cex=1.3,cex.lab=1.3,cex.axis=1.3)
+#}
+```
+
+```{r, gráficos de dispersão, fig.height=7, fig.cap="Gráficos de Dispersão", echo=FALSE}
+my_cols <- c("black", "ivory4") 
+pairs(dados[,2:8],cex.axis=1.3,cex.lab=1.3,pch = c(16, 17)[as.numeric(Especie)],col=my_cols[dados$Especie], upper.panel = NULL)
+```
+
+
+```{r, matrizes de cov-cor, echo=FALSE, include=FALSE}
+# correlações e covariância
+auxcov <- by(dadosd,especie,cov) #matriz de covariancia
+auxcor <- by(dadosd,especie,cor) #matriz de correlação
+aux.matrix <- ifelse(lower.tri(as.matrix(auxcov$Torrens),diag=TRUE),1,0)
+aux.matrix1 <- ifelse(upper.tri(as.matrix(auxcov$Torrens)),1,0)
+# Matriz de cov-cor da Especie Torrens
+mat.tor <- as.matrix(auxcov$Torrens)*aux.matrix +   as.matrix(auxcor$Torrens)*aux.matrix1
+mat.tor <- round(mat.tor,3)
+xtable(mat.tor)
+# Matriz de cov-cor da Especie Carteri
+mat.car <- as.matrix(auxcov$Carteri)*aux.matrix +   as.matrix(auxcor$Carteri)*aux.matrix1
+mat.car <- round(mat.car,3)
+xtable(mat.car)
+```
+
+\begin{table}[ht]
+\centering
+\begin{tabular}{rrrrrrrr}
+  \hline
+ & C.Asa & L.Asa & C3p & L3p & C4p & C12a & C13a \\ 
+  \hline
+  \multicolumn{8}{ c }{TORRENS} \\
+  \hline
+C.Asa & - & \textbf{0,67} & \textbf{0,17} & 0,19 & 0,39 & 0,32 & 0,29 \\ 
+  L.Asa & 11,72 & - & 0,30 & 0,37 & 0,48 & 0,13 & 0,12 \\ 
+  C3p & 2,33 & 1,83 & - & -0,19 & 0,11 & -0,18 & 0,09 \\ 
+  L3p & 2,20 & 1,84 & -0,78 & - & 0,37 & 0,10 & 0,00 \\ 
+  C4p & 6,26 & 3,26 & 0,61 & 1,70 & - & -0,01 & -0,02 \\ 
+  C12a & 1,88 & 0,32 & -0,37 & 0,17 & -0,02 & - & \textbf{0,78} \\ 
+  C13a & 1,66 & 0,30 & 0,17 & 0,00 & -0,05 & 0,64 & - \\ 
+  \hline
+  \multicolumn{8}{ c }{CARTERI} \\
+  \hline
+C.Asa & - & \textbf{0,61} & \textbf{0,62} & 0,56 & 0,50 & 0,42 & 0,60 \\ 
+  L.Asa & 17,47 & - & 0,26 & 0,50 & 0,38 & 0,28 & 0,28 \\ 
+  C3p & 9,83 & 3,70 & - & 0,46 & 0,20 & 0,22 & 0,38 \\ 
+  L3p & 5,15 & 4,14 & 2,17 & - & 0,41 & 0,18 & 0,25 \\ 
+  C4p & 12,88 & 8,94 & 2,62 & 3,12 & - & 0,20 & 0,26 \\ 
+  C12a & 2,97 & 1,79 & 0,79 & 0,38 & 1,15 & - & \textbf{0,87} \\ 
+  C13a & 3,63 & 1,57 & 1,17 & 0,46 & 1,32 & 1,19 & - \\ 
+   \hline
+\end{tabular}
+\end{table}
+
+\newpage
+
+  Na figura 2, estão disponibilizados os boxplots referentes às variáveis de interesse para ambos os grupos. A princípio, nota-se a grande presença de outliers para a espécie Carteri em seis dos 7 gráficos, enquanto que a espécie Torrens apresenta outlies em apenas um deles. Além disso, também para seis das sete variáveis, a espécie Carteri apresenta valores superiores da mediana em relação à espécie Torrens, nao ocorrendo tal evento apenas para a variável  C13a.
+  Ainda utilizando os boxplots (figura 2), pode-se identificar, pelas distâncias entre os primeiros e terceiros quartis em relação à mediana, que há bastante assimetria nas distribuições, e que a distribuições das variáveis aparentam ser diferentes entre as espécies, sendo que as manores diferenças parecem estar nas caracterísicas C3p e C4p.
 
 ```{r, plotanto os boxplots, echo=FALSE, fig.height=5, fig.cap="BoxPlots"}
 boxCAsa <- ggplot(dados, aes(Especie, C.Asa, group = Especie)) + 
@@ -140,126 +279,7 @@ grid.arrange(boxCAsa, boxLAsa, boxC3p, boxL3p, boxC4p, boxC12a, boxC13a, nrow=3,
 #boxplot(dados[,8]~especie,xlab="Especie",ylab="comp. do 13 segm.",cex=1.3,cex.lab=1.3,cex.axis=1.3)
 ```
 
-
-```{r, histogramas, echo=FALSE, fig.width=15, fig.height=15, fig.cap="BoxPlots", include=FALSE}
-
-histC.Asa <- ggplot(dados,aes(C.Asa))+geom_histogram(breaks=seq(80, 115, by=5), color="black", fill="white")+facet_grid(~Especie)+theme_bw()
-
-histL.Asa <- ggplot(dados,aes(L.Asa))+geom_histogram(breaks=seq(15, 50, by=2), color="black", fill="white")+facet_grid(~Especie)+theme_bw()
-
-histC3p <- ggplot(dados,aes(x=C3p))+geom_histogram(breaks=seq(30, 45, by=2), color="black", fill="white")+facet_grid(~Especie)+theme_bw()
-
-histL3p <- ggplot(dados,aes(x=L3p))+geom_histogram(breaks=seq(10, 20, by=2), color="black", fill="white")+facet_grid(~Especie)+theme_bw()
-
-histC4p <- ggplot(dados,aes(x=C4p))+geom_histogram(breaks=seq(20, 40, by=2), color="black", fill="white")+facet_grid(~Especie)+theme_bw()
-
-histC12a <- ggplot(dados,aes(x=C12a))+geom_histogram(breaks=seq(0, 15, by=2), color="black", fill="white")+facet_grid(~Especie)+theme_bw()
-
-histC13a <- ggplot(dados,aes(x=C13a))+geom_histogram(breaks=seq(5, 15, by=2), color="black", fill="white")+facet_grid(~Especie)+theme_bw()
-
-grid.arrange(histC.Asa,histL.Asa,histC3p,histL3p,histC4p,histC12a,histC13a,nrow=4,ncol=2)
-
-# Especie Torrens
-#par(mfrow=c(3,3))
-#for (j in 1:nvar)
-#{
-#  hist(dadosd[especie == "Torrens",j],xlab=inames[j],ylab="densidade",main="Torrens",probability=TRUE,cex=1.3,cex.lab=1.3,cex.axis=1.3)
-#}
-# Especie Carteri
-#par(mfrow =c(2,4))
-#for (j in 1:nvar)
-#{
-# hist(dadosd[especie == "Carteri",j],xlab = inames[j],ylab="densidade",main = "Carteri",probability = TRUE,cex=1.3,cex.lab=1.3,cex.axis=1.3)
-#}
-```
-
-```{r, gráficos de dispersão, echo=FALSE, , fig.width=8, fig.height=7}
-my_cols <- c("black", "ivory4") 
-pairs(dados[,2:8],cex.axis=1.3,cex.lab=1.3,pch = c(16, 17)[as.numeric(Especie)],main="Gráfico de Dispersão", col=my_cols[dados$Especie], upper.panel = NULL)
-```
-
-
-```{r, matrizes de cov-cor, echo=FALSE, include=FALSE}
-# correlações e covariância
-auxcov <- by(dadosd,especie,cov) #matriz de covariancia
-auxcor <- by(dadosd,especie,cor) #matriz de correlação
-aux.matrix <- ifelse(lower.tri(as.matrix(auxcov$Torrens),diag=TRUE),1,0)
-aux.matrix1 <- ifelse(upper.tri(as.matrix(auxcov$Torrens)),1,0)
-# Matriz de cov-cor da Especie Torrens
-mat.tor <- as.matrix(auxcov$Torrens)*aux.matrix +   as.matrix(auxcor$Torrens)*aux.matrix1
-mat.tor <- round(mat.tor,3)
-xtable(mat.tor)
-# Matriz de cov-cor da Especie Carteri
-mat.car <- as.matrix(auxcov$Carteri)*aux.matrix +   as.matrix(auxcor$Carteri)*aux.matrix1
-mat.car <- round(mat.car,3)
-xtable(mat.car)
-```
-
-\begin{table}[ht]
-\centering
-\begin{tabular}{rrrrrrrr}
-  \hline
- & C.Asa & L.Asa & C3p & L3p & C4p & C12a & C13a \\ 
-  \hline
-  \multicolumn{8}{ c }{TORRENS} \\
-  \hline
-C.Asa & 40,73 & 0,67 & 0,17 & 0,19 & 0,39 & 0,32 & 0,29 \\ 
-  L.Asa & 11,72 & 7,49 & 0,30 & 0,37 & 0,48 & 0,13 & 0,12 \\ 
-  C3p & 2,33 & 1,83 & 4,83 & -0,19 & 0,11 & -0,18 & 0,09 \\ 
-  L3p & 2,20 & 1,84 & -0,78 & 3,38 & 0,37 & 0,10 & 0,00 \\ 
-  C4p & 6,26 & 3,26 & 0,61 & 1,70 & 6,24 & -0,01 & -0,02 \\ 
-  C12a & 1,88 & 0,32 & -0,37 & 0,17 & -0,02 & 0,84 & 0,78 \\ 
-  C13a & 1,66 & 0,30 & 0,17 & 0,00 & -0,05 & 0,64 & 0,80 \\ 
-  \hline
-  \multicolumn{8}{ c }{CARTERI} \\
-  \hline
- & C.Asa & L.Asa & C3p & L3p & C4p & C12a & C13a \\ 
-  \hline
-C.Asa & 31,29 & 0,61 & 0,62 & 0,56 & 0,50 & 0,42 & 0,60 \\ 
-  L.Asa & 17,47 & 25,79 & 0,26 & 0,50 & 0,38 & 0,28 & 0,28 \\ 
-  C3p & 9,83 & 3,70 & 8,04 & 0,46 & 0,20 & 0,22 & 0,38 \\ 
-  L3p & 5,15 & 4,14 & 2,17 & 2,70 & 0,41 & 0,18 & 0,25 \\ 
-  C4p & 12,88 & 8,94 & 2,62 & 3,12 & 21,29 & 0,20 & 0,26 \\ 
-  C12a & 2,97 & 1,79 & 0,79 & 0,38 & 1,15 & 1,58 & 0,87 \\ 
-  C13a & 3,63 & 1,57 & 1,17 & 0,46 & 1,32 & 1,19 & 1,18 \\ 
-   \hline
-\end{tabular}
-\end{table}
-  
-```{r, medidas resumo, echo=FALSE, include = FALSE}
-## Comprimento da Asa
-datadados1 <- data.frame(C.Asa,especie)
-medados1 <- ddply(datadados1,.(especie),summarise,media=mean(C.Asa),dp=sqrt(var(C.Asa)),vari=var(C.Asa),cv=100*((sqrt(var(C.Asa))/mean(C.Asa))),minimo=min(C.Asa),mediana=quantile(C.Asa,0.5),maximo=max(C.Asa),n=length(C.Asa))
-medados1
-##Largura da Asa
-datadados2 <- data.frame(L.Asa,especie)
-medados2 <- ddply(datadados2,.(especie),summarise,media=mean(L.Asa),dp=sqrt(var(L.Asa)),vari=var(L.Asa),cv=100*((sqrt(var(L.Asa))/mean(L.Asa))),minimo=min(L.Asa),mediana=quantile(L.Asa,0.5),maximo=max(L.Asa),n=length(L.Asa))
-medados2
-# Comprimento do 3 palpo
-datadados3 <- data.frame(C3p,especie)
-medados3 <- ddply(datadados3,.(especie),summarise,media=mean(C3p),dp=sqrt(var(C3p)),vari=var(C3p),cv=100*((sqrt(var(C3p))/mean(C3p))),minimo=min(C3p),mediana=quantile(C3p,0.5),maximo=max(C3p),n=length(C3p))
-medados3
-# Largura do 3 palpo
-datadados4 <- data.frame(L3p,especie)
-medados4 <- ddply(datadados4,.(especie),summarise,media=mean(L3p),dp=sqrt(var(L3p)),vari=var(L3p),cv=100*((sqrt(var(L3p))/mean(L3p))),minimo=min(L3p),mediana=quantile(L3p,0.5),maximo=max(L3p),n=length(L3p))
-medados4
-# Comprimento do 2 palpo
-datadados5 <- data.frame(C4p,especie)
-medados5 <- ddply(datadados5,.(especie),summarise,media=mean(C4p),dp=sqrt(var(C4p)),vari=var(C4p),cv=100*((sqrt(var(C4p))/mean(C4p))),minimo=min(C4p),mediana=quantile(C4p,0.5),maximo=max(C4p),n=length(C4p))
-medados5
-# Comprimento do 12 segmento de antena
-datadados6 <- data.frame(C12a,especie)
-medados6 <- ddply(datadados6,.(especie),summarise,media=mean(C12a),dp=sqrt(var(C12a)),vari=var(C12a),cv=100*((sqrt(var(C12a))/mean(C12a))),minimo=min(C12a),mediana=quantile(C12a,0.5),maximo=max(C12a),n=length(C12a))
-medados6
-# Comprimento do 13 segmento da antena
-datadados7 <- data.frame(C13a,especie)
-medados7 <- ddply(datadados7,.(especie),summarise,media=mean(C13a),dp=sqrt(var(C13a)),vari=var(C13a),cv=100*((sqrt(var(C13a))/mean(C13a))),minimo=min(C13a),mediana=quantile(C13a,0.5),maximo=max(C13a),n=length(C13a))
-medados7
-
-medresumo <- rbind(medados1, medados2, medados3, medados4, medados5, medados6, medados7)
-xtable(medresumo)
-```
-
+A figura 3 mostra os gráficos de quantis-quantis com envelopes para a distância de Mahalanobis, para cada espécie. É perceptível que a suposição de normalidade multivariada não aparenta ser razoável para cada uma das espécies. Nota-se, nestes gráficos, que há diversas fugas para quantis menores na parte inferior do gráfico, e de quantis maiores na parte superior do gráfico da distribuição F, o que nos indica que a suposição de normalidade multivariada pode nao ser adequada aos dados.
 
 ```{r, graficos quantis-quantis com envelopes para cada Especie, include=FALSE, echo=FALSE}
 # Especie Torrens
@@ -277,8 +297,9 @@ for (j in 1:nvar)
 
 ```
 
+Diante destas análises podemos conjecturar que exita, entre as espécies, diferença na média de variáveis como C.Asa, C3p e C4p. Para verificar a validade ou não tais conjecturas faremos uma análise inferencial dos dados.
 
-```{r, Envelopes para a forma quadrática (devem ter distribuição T² de Hotteling) e depois ele transforma na t,  fig.height=5, echo=FALSE}
+```{r, Envelopes para a forma quadrática (devem ter distribuição T² de Hotteling) e depois ele transforma na t,  fig.cap="Gráfico de quantil-quantil com envelopes para a distância de Mahalanobis", fig.height=5, echo=FALSE}
 par(mfrow=c(1,2))
 # Especie Torrens
 vmu <- apply(mx[especie == "Torrens",],2,mean)
@@ -298,7 +319,55 @@ vF <- (n0-nvar)*vF/((n0-1)*nvar)
 qqPlot(vF,dist="f",df1=nvar,df2=n0-nvar,col.lines=1,grid="FALSE",xlab="quantil da distribuição F",ylab="quantil da forma quadrática", main = "Especie Carteri") 
 ```
 
+#Análise inferencial
 
+Para comparar os grupos Torrens e Carteri com relação às variáveis de interesse, o seguinte modelo foi ajustado:
+\begin{center}
+$$Y_{ijk}= \mu_k + \alpha_{ik} + \epsilon_{ijk} \ com \ \alpha_{1k}=0 \ e \ \mathbf{\epsilon_{ij}} \sim N_7(\mathbf0,\mathbf{\Sigma})$$
+\end{center}
+onde:
+\begin{itemize}
+\item i = 1,2 (grupo, 1-Torrens, 2-Carteri)
+\item j = 1, 2,..., 35 (indivíduo)
+\item k = 1, 2,..., 7 (variáveis: 1-C.Asa, 2–L.Asa, 3–C3p, 4–L3p, 5–C4p, 6–C12a, 7–C13a).
+\end{itemize}
+
+O modelo foi ajustado de acordo com as metodologias vistas em sala de aula (ver Azevedo(2017)).
+
+A tabela 3 mostra as estimativas e sinificância dos parâmetros do modelo para cada variável resposta. Através dela é possivel notar que as médias para as características C.Asa, C3p e C4p diferem entre as espécies e que o grupo Carteri apresenta a maior média. Para as demais variáveis, conclui-se que não existe uma diferença quanto a media das espécies Torrens e Carteri.
+
+
+\begin{table}[ht]
+\centering
+\begin{tabular}{rlrrrrrrrr}
+  \hline
+Variável & Parâmetro & Estimativa & Erro Padrão & Valor t & p-valor \\ 
+  \hline
+  C.Asa & $\mu_1$  & 96,46 & 1,01 & 95,10 & <0,01 \\ 
+   & $\alpha_1$ & 2,89 & 1,43 & 2,01 & 0,05  \\ 
+  \\ 
+  L.Asa & $\mu_1$ & 42,91 & 0,69 & 62,24 & <0,01 \\ 
+   & $\alpha_1$ & 0,83 & 0,98 & 0,85 & 0,40 \\ 
+  \\
+  C3p   & $\mu_1$ & 35,37 & 0,43 & 82,48 & <0,01 \\ 
+   & $\alpha_1$ & 3,94 & 0,61 & 6,50 & <0,01 \\ 
+  \\ 
+  L3p   & $\mu_1$ & 14,51 & 0,29 & 49,26 & <0,01  \\ 
+   & $\alpha_1$ & 0,14 & 0,42 & 0,34 & 0,73\\ 
+  \\
+  C4p   & $\mu_1$ & 25,63 & 0,63 & 40,86 & <0,01 \\ 
+   & $\alpha_1$ & 4,37 & 0,89 & 4,93 & < 0,01 \\ 
+  \\ 
+  C12a  & $\mu_1$ & 9,57 & 0,19 & 51,42 & <0,01 \\ 
+   & $\alpha_1$ & 0,09 & 0,26 & 0,33 & 0,75 \\ 
+  \\ 
+  C13a  & $\mu_1$ & 9,71 & 0,17 & 57,76 & <0,01 \\ 
+   & $\alpha_1$ & -0,34 & 0,24 & -1,44 & 0,15 \\ 
+  \hline
+\end{tabular}
+\end{table}
+
+\newpage
 ```{r, MANOVA,  echo=FALSE, include=FALSE}
 nespecie <- ifelse (especie == "Torrens", 1,2)
 v.grupos <- cbind(as.numeric(nespecie))
@@ -355,6 +424,8 @@ summary.manova(m.ajuste,test="Roy")
 aux <- summary.aov(m.ajuste)
 ```
 
+As conStatações da tabela acima são comprovadas com a realização da metodologia MANOVA, utilizada para testar a igualdade simultanea de médias entre os grupos Torrens e Carteri. Nessa metodologia quatro testes multivariados foram utilizados: Wilks, Pillai, Hotelling-Lawley e Roy, os quais têm aproximação pela distribuição F e seus resultados são mostrados na tabela (numero da tabela).
+
 
 \begin{table}[ht]
 \centering
@@ -370,6 +441,8 @@ aux <- summary.aov(m.ajuste)
 \end{tabular}
 \end{table}
 
+Para todos os testes obteve-se o resultado de que não há evidências para afirmar que as médias são iguais. Tendo isso, o interesse, agora, está em testar cada variável separadamente a fim de identificar onde reside a diferença.
+
 ```{r, Obtendo estimativa dos parametros do modelo, echo=FALSE, include = FALSE}
 especief <- especie
 especief <- ifelse(especief == "Torrens",0,1)
@@ -377,30 +450,6 @@ fit.model <- lm(as.matrix(dados[2:8]) ~ especief)
 fit1 <- summary(fit.model)
 fit1
 ```
-
-\begin{table}[ht]
-\centering
-\begin{tabular}{rlrrrrrrrr}
-  \hline
-Variável & Parâmetro & Estimativa & Erro Padrão & Valor t & p-valor \\ 
-  \hline
-  C.Asa & $\mu_1$  & 96,46 & 1,01 & 95,10 & <0,01 \\ 
-   & $\alpha_1$ & 2,89 & 1,43 & 2,01 & 0,05  \\ 
-  L.Asa & $\mu_1$ & 42,91 & 0,69 & 62,24 & <0,01 \\ 
-   & $\alpha_1$ & 0,83 & 0,98 & 0,85 & 0,40 \\ 
-  C3p   & $\mu_1$ & 35,37 & 0,43 & 82,48 & <0,01 \\ 
-   & $\alpha_1$ & 3,94 & 0,61 & 6,50 & <0,01 \\ 
-  L3p   & $\mu_1$ & 14,51 & 0,29 & 49,26 & <0,01  \\ 
-   & $\alpha_1$ & 0,14 & 0,42 & 0,34 & 0,73\\ 
-  C4p   & $\mu_1$ & 25,63 & 0,63 & 40,86 & <0,01 \\ 
-   & $\alpha_1$ & 4,37 & 0,89 & 4,93 & < 0,01 \\ 
-  C12a  & $\mu_1$ & 9,57 & 0,19 & 51,42 & <0,01 \\ 
-   & $\alpha_1$ & 0,09 & 0,26 & 0,33 & 0,75 \\ 
-  C13a  & $\mu_1$ & 9,71 & 0,17 & 57,76 & <0,01 \\ 
-   & $\alpha_1$ & -0,34 & 0,24 & -1,44 & 0,15 \\ 
-   \hline
-\end{tabular}
-\end{table}
 
 
 ```{r, testes de comparações multiplas, echo=FALSE}
@@ -472,6 +521,7 @@ m.M <- 0
 TesteF.CBU.M(fit.model,m.Sigma.P,p,G,m.C,m.U,m.M)
 ```
 
+Para realizar a supracitada análise, foram utilizados testes do tipo CBU=M (ver Azevedo(2017)) considerando um nível de significância $\alpha=0,05$ cujos resultados são mostrados na tabela (numero da tabela), e por meio destes conclui-se que quatro das sete variáveis possuem as médias estatisticamente iguais em relação as duas espécies, sendo estas as mesmas indicadas pelos testes de significancia dos parâmetros, ou seja, L.Asa, L3p, C12a e C13a. Para as demais (C.Asa, C3p, C4p), tem-se evidência que existe diferença entre os grupos estudados.
 
 \begin{table}[ht]
 \centering
@@ -490,6 +540,20 @@ TesteF.CBU.M(fit.model,m.Sigma.P,p,G,m.C,m.U,m.M)
 \end{tabular}
 \end{table}
 
+Na figura 4 estão os gráficos de médias preditas pelo modelo completo para cada variável, por grupo. Os intervalos de confiança assintóticos apresentados foram calculados utilizando a metodologia estudada em sala e descrita em (Azevedo(2017)).
+  Para as variáveis C3p e C4p pode-se notr que a espécie Carteri tem uma maior média predita e que seus intervalos de confiança nao se interseptam indicando que a distribuição destas variáveis é consideravelmente diferente entre os grupos.
+  Apesar de o teste de igualdade de médias ter rejeitado, a um nivel de 5% de confiança, a hipótese de igualdade para a variável C.Asa, no gráfico essa diferença nao é tçao explicita e os intervalos de confiança para os dois grupos chegam se interseptar.
+  Para as outras variáveis as medias preditas são muito próximas e os IC's tem grandes intersecções o que está de acordo com os resultados dos testes de igualdade de medias feitos acima.
+  
+COLOCAR GRÁFICO DE MEDIAS PREDITAS!
+  
+  As figuras de 5 a 11 apresentam os gráficos de resíduo do modelo para cada variável, onde temo, da esqueda para a direita, de cima para baixo, os seguintes gráficos (A)Resíduos Studentizado x Índice, (B)Resíduos Studentizado x Valor Ajustado, (C)Hístograma dos Resíduos Studentizado e (D)Q-Qplot da distríbuição normal. A partir de agora usaremos as respectivas letras (A, B, C e D) para nos referirmos a cada um dos gráficos.
+  Análisando os gráficos A e B nota-se que para algumas variáveis o comportamento destes gráficos indicam a presença de heterocedasticidade e dependencia dos resíduos, como por exemplo para C4p para a qual o gráfico A aprensenta um aumento da dispersão dos pontos com o aumento dos indíces, ficando com um formato de "cone" e no gráfico B a variabilidade dos resíduos para um dos grupos é bem maior que para o outro. Nas variáveis C.Asa e c3p também é observado um aumento da variábilidade entre os grupos no gráfico B e, mais especificamente para a variável C3p uma tendência em A parecida com a que foi observada em C4p.
+  As variáveis L3p, C12a e C13a, apesar de não apresentarem tendência em A, apresentam tendências em B, indicando heterocedásticidade
+  Para o gráfico C tem-se em toda as variáveis, exceto C12a, existe assimetria no histograma de todas as variáveis, podendo ser levemente positiva (como para L3p e C13a), levemente negativa (como para C.Asa e C3p) ou fortemente negativa (como para L.Asa e C4p). Isso tras uma evidencia contrária a suposição de normalidade dos resíduos.
+  No grafico D observa-se padrões no comportamento dos resíduos de todas as variáveis, e para as variáveis C.Asa, L3p, C4p e C12a também é possível notar diversos pontos fora das bandas de confiança. Estes resultados evidênciam a não validade da suposição de normalidade dos resíduos.
+  Portanto, ao final da análise resídual conclui-se que o modelo escolhido nao se ajustou satisfatóriamente aos dados por conta da contatação de não normalidade, heterocedasticidade e, em alguns casos, possível dependência dos resíduos. Seria razoavel a tentativa de ajustar um modelo que nao suponha a homocedasticidade e, caso este ainda nao funcione, a de ajustar um modelo que nao suponha normalidade.
+
 ```{r, análise de resíduos, fig.height=5, echo=FALSE}
 # resíduos ordinários
 m.residuo <- m.ajuste$residuals
@@ -501,129 +565,132 @@ m.residuo <- m.residuo/(sqrt((matrix(auxres,70,7))%*%diag(diag(m.Sigma.P)))) ###
 m.ajustado <- fitted.values(m.ajuste)
 ```
 
-```{r, echo=FALSE}
+```{r, fig.height=5, fig.cap="Gráfico de Resíduos para a variável C.Asa", echo=FALSE}
 # Comprimento da Asa
 par(mfrow =c(2,2))
-plot(m.residuo[,1],ylim=c(min(-3,min(m.residuo[,1])),max(3,max(m.residuo[,1]))),xlab="índice",ylab="resíduo studentizado")
+plot(m.residuo[,1],ylim=c(min(-3,min(m.residuo[,1])),max(3,max(m.residuo[,1]))),xlab="Índice",ylab="Res. Stud.")
 abline(-2,0,lty=2)
 abline(2,0,lty=2)
 abline(0,0,lty=2)
 
-plot(m.ajustado[,1],m.residuo[,1],ylim=c(min(-3,min(m.residuo[,1])),max(3,max(m.residuo[,1]))),xlab="valor ajustado",ylab="resíduo studentizado")
+plot(m.ajustado[,1],m.residuo[,1],ylim=c(min(-3,min(m.residuo[,1])),max(3,max(m.residuo[,1]))),xlab="Valor Ajustado",ylab="Res. Stud.")
 abline(-2,0,lty=2)
 abline(2,0,lty=2)
 abline(0,0,lty=2)
 
-hist(m.residuo[,1],probability=TRUE,xlab="resíduo studentizado",main="",ylab="densidade")
+hist(m.residuo[,1],probability=TRUE,xlab="Res. Stud.",main="",ylab="Densidade")
 
-qqPlot((m.residuo[,1]),dist="norm",mean=0,sd=1,col.lines=1,grid="FALSE",xlab="quantil da N(0,1)",ylab=paste("quantil da distribuição do resíduo studentizado"),cex=1.2,id.cex=1.2)
+qqPlot((m.residuo[,1]),dist="norm",mean=0,sd=1,col.lines=1,grid="FALSE",xlab="Quantil da N(0,1)",ylab=paste("Quantil da Dist do Res. Stud."),cex=1.2,id.cex=1.2)
 ```
 
-```{r, echo=FALSE}
+```{r, fig.cap="Gráfico de Resíduos para a variável L.Asa", echo=FALSE}
 # Largura da Asa
 par(mfrow =c(2,2))
-plot(m.residuo[,2],ylim=c(min(-3,min(m.residuo[,2])),max(3,max(m.residuo[,2]))),xlab="índice",ylab="resíduo studentizado")
+plot(m.residuo[,2],ylim=c(min(-3,min(m.residuo[,2])),max(3,max(m.residuo[,2]))),xlab="Índice",ylab="Res. Stud.")
 abline(-2,0,lty=2)
 abline(2,0,lty=2)
 abline(0,0,lty=2)
 
-plot(m.ajustado[,2],m.residuo[,2],ylim=c(min(-3,min(m.residuo[,2])),max(3,max(m.residuo[,2]))),xlab="valor ajustado",ylab="resíduo studentizado")
+plot(m.ajustado[,2],m.residuo[,2],ylim=c(min(-3,min(m.residuo[,2])),max(3,max(m.residuo[,2]))),xlab="Valor Ajustado",ylab="Res. Stud.")
 abline(-2,0,lty=2)
 abline(2,0,lty=2)
 abline(0,0,lty=2)
 
-hist(m.residuo[,2],probability=TRUE,xlab="resíduo studentizado",main="",ylab="densidade")
+hist(m.residuo[,2],probability=TRUE,xlab="Res. Stud.", main = "", ylab="Densidade")
 
-qqPlot((m.residuo[,2]),dist="norm",mean=0,sd=1,col.lines=1,grid="FALSE",xlab="quantil da N(0,1)",ylab=paste("quantil da distribuição do resíduo studentizado"),cex=1.2,id.cex=1.2)
+qqPlot((m.residuo[,2]),dist="norm",mean=0,sd=1,col.lines=1,grid="FALSE",xlab="Quantil da N(0,1)",ylab=paste("Quantil da Dist. do Res. Stud."),cex=1.2,id.cex=1.2)
 ```
 
-```{r, echo=FALSE}
+```{r, fig.cap="Gráfico de Resíduos para a variável C3p", echo=FALSE}
 # Comprimento do 3 Palpo
 par(mfrow =c(2,2))
-plot(m.residuo[,3],ylim=c(min(-3,min(m.residuo[,3])),max(3,max(m.residuo[,3]))),xlab="índice",ylab="resíduo studentizado")
+plot(m.residuo[,3],ylim=c(min(-3,min(m.residuo[,3])),max(3,max(m.residuo[,3]))),xlab="Índice",ylab="Res. Stud.")
 abline(-2,0,lty=2)
 abline(2,0,lty=2)
 abline(0,0,lty=2)
 
-plot(m.ajustado[,3],m.residuo[,3],ylim=c(min(-3,min(m.residuo[,3])),max(3,max(m.residuo[,3]))),xlab="valor ajustado",ylab="resíduo studentizado")
+plot(m.ajustado[,3],m.residuo[,3],ylim=c(min(-3,min(m.residuo[,3])),max(3,max(m.residuo[,3]))),xlab="Valor Ajustado",ylab="Res. Stud.")
 abline(-2,0,lty=2)
 abline(2,0,lty=2)
 abline(0,0,lty=2)
 
 hist(m.residuo[,3],probability=TRUE,xlab="resíduo studentizado",main="",ylab="densidade")
 
-qqPlot((m.residuo[,3]),dist="norm",mean=0,sd=1,col.lines=1,grid="FALSE",xlab="quantil da N(0,1)",ylab=paste("quantil da distribuição do resíduo studentizado"),cex=1.2,id.cex=1.2)
+qqPlot((m.residuo[,3]),dist="norm",mean=0,sd=1,col.lines=1,grid="FALSE",xlab="Quantil da N(0,1)",ylab=paste("Quantil da Dist do Res. Stud."),cex=1.2,id.cex=1.2)
 ```
 
-```{r, echo=FALSE}
+```{r, fig.cap="Gráfico de Resíduos para a variável L3p", echo=FALSE}
 # Largura do 3 Palpo
 par(mfrow =c(2,2))
-plot(m.residuo[,4],ylim=c(min(-3,min(m.residuo[,4])),max(3,max(m.residuo[,4]))),xlab="índice",ylab="resíduo studentizado")
+plot(m.residuo[,4],ylim=c(min(-3,min(m.residuo[,4])),max(3,max(m.residuo[,4]))),xlab="Índice",ylab="Res. Stud.")
 abline(-2,0,lty=2)
 abline(2,0,lty=2)
 abline(0,0,lty=2)
 
-plot(m.ajustado[,4],m.residuo[,4],ylim=c(min(-3,min(m.residuo[,4])),max(3,max(m.residuo[,4]))),xlab="valor ajustado",ylab="resíduo studentizado")
+plot(m.ajustado[,4],m.residuo[,4],ylim=c(min(-3,min(m.residuo[,4])),max(3,max(m.residuo[,4]))),xlab="Valor Ajustado",ylab="Res. Stud.")
 abline(-2,0,lty=2)
 abline(2,0,lty=2)
 abline(0,0,lty=2)
 
-hist(m.residuo[,4],probability=TRUE,xlab="resíduo studentizado",main="Histograma dos resíduos",ylab="densidade")
+hist(m.residuo[,4],probability=TRUE,xlab="Res. Stud.",main = "", ylab="Densidade")
 
-qqPlot((m.residuo[,4]),dist="norm",mean=0,sd=1,col.lines=1,grid="FALSE",xlab="quantil da N(0,1)",ylab=paste("quantil da distribuição do resíduo studentizado"),cex=1.2,id.cex=1.2)
+qqPlot((m.residuo[,4]),dist="norm",mean=0,sd=1,col.lines=1,grid="FALSE",xlab="Quantil da N(0,1)",ylab=paste("Quantil da Dist do Res. Stud."),cex=1.2,id.cex=1.2)
 ```
 
-```{r, echo=FALSE}
+```{r, fig.cap="Gráfico de Resíduos para a variável C4p",  echo=FALSE}
 # Comprimento do 2 Palpo
 par(mfrow =c(2,2))
-plot(m.residuo[,5],ylim=c(min(-3,min(m.residuo[,5])),max(3,max(m.residuo[,5]))),xlab="índice",ylab="resíduo studentizado")
+plot(m.residuo[,5],ylim=c(min(-3,min(m.residuo[,5])),max(3,max(m.residuo[,5]))),xlab="Índice",ylab="Res. Stud.")
 abline(-2,0,lty=2)
 abline(2,0,lty=2)
 abline(0,0,lty=2)
 
-plot(m.ajustado[,4],m.residuo[,5],ylim=c(min(-3,min(m.residuo[,5])),max(3,max(m.residuo[,5]))),xlab="valor ajustado",ylab="resíduo studentizado")
+plot(m.ajustado[,4],m.residuo[,5],ylim=c(min(-3,min(m.residuo[,5])),max(3,max(m.residuo[,5]))),xlab="Valor Ajustado",ylab="Res. Stud.")
 abline(-2,0,lty=2)
 abline(2,0,lty=2)
 abline(0,0,lty=2)
 
-hist(m.residuo[,5],probability=TRUE,xlab="resíduo studentizado",main="Histograma dos resíduos",ylab="densidade")
+hist(m.residuo[,5],probability=TRUE,xlab="Res. Stud.",main = "", ylab="densidade")
 
-qqPlot((m.residuo[,5]),dist="norm",mean=0,sd=1,col.lines=1,grid="FALSE",xlab="quantil da N(0,1)",ylab=paste("quantil da distribuição do resíduo studentizado"),cex=1.2,id.cex=1.2)
+qqPlot((m.residuo[,5]),dist="norm",mean=0,sd=1,col.lines=1,grid="FALSE",xlab="Quantil da N(0,1)",ylab=paste("Quantil da dist do Res. Stud."),cex=1.2,id.cex=1.2)
 ```
 
-```{r, echo=FALSE}
+```{r, fig.cap="Gráfico de Resíduos para a variável C12a", echo=FALSE}
 # Comprimento do 12segmento da antena
 par(mfrow =c(2,2))
-plot(m.residuo[,6],ylim=c(min(-3,min(m.residuo[,6])),max(3,max(m.residuo[,6]))),xlab="índice",ylab="resíduo studentizado")
+plot(m.residuo[,6],ylim=c(min(-3,min(m.residuo[,6])),max(3,max(m.residuo[,6]))),xlab="Índice",ylab="Res. Stud.")
 abline(-2,0,lty=2)
 abline(2,0,lty=2)
 abline(0,0,lty=2)
 
-plot(m.ajustado[,6],m.residuo[,6],ylim=c(min(-3,min(m.residuo[,6])),max(3,max(m.residuo[,6]))),xlab="valor ajustado",ylab="resíduo studentizado")
+plot(m.ajustado[,6],m.residuo[,6],ylim=c(min(-3,min(m.residuo[,6])),max(3,max(m.residuo[,6]))),xlab="valor Ajustado",ylab="Res. Stud.")
 abline(-2,0,lty=2)
 abline(2,0,lty=2)
 abline(0,0,lty=2)
 
-hist(m.residuo[,6],probability=TRUE,xlab="resíduo studentizado",main="Histograma dos resíduos",ylab="densidade")
+hist(m.residuo[,6],probability=TRUE,xlab="Res. Stud.",main = "", ylab="Densidade")
 
-qqPlot((m.residuo[,6]),dist="norm",mean=0,sd=1,col.lines=1,grid="FALSE",xlab="quantil da N(0,1)",ylab=paste("quantil da distribuição do resíduo studentizado"),cex=1.2,id.cex=1.2)
+qqPlot((m.residuo[,6]),dist="norm",mean=0,sd=1,col.lines=1,grid="FALSE",xlab="Quantil da N(0,1)",ylab=paste("Quantil da Dist do Res. Stud."),cex=1.2,id.cex=1.2)
 ```
 
-```{r, echo=FALSE}
+```{r, fig.cap="Gráfico de Resíduos para a variável C13a", echo=FALSE}
 # Comprimento do 13 segmento da antena
 par(mfrow =c(2,2))
-plot(m.residuo[,7],ylim=c(min(-3,min(m.residuo[,7])),max(3,max(m.residuo[,7]))),xlab="índice",ylab="resíduo studentizado")
+plot(m.residuo[,7],ylim=c(min(-3,min(m.residuo[,7])),max(3,max(m.residuo[,7]))),xlab="Índice",ylab="Res. Stud.")
 abline(-2,0,lty=2)
 abline(2,0,lty=2)
 abline(0,0,lty=2)
 
-plot(m.ajustado[,7],m.residuo[,7],ylim=c(min(-3,min(m.residuo[,7])),max(3,max(m.residuo[,7]))),xlab="valor ajustado",ylab="resíduo studentizado")
+plot(m.ajustado[,7],m.residuo[,7],ylim=c(min(-3,min(m.residuo[,7])),max(3,max(m.residuo[,7]))),xlab="Valor Ajustado",ylab="Res. Stud.")
 abline(-2,0,lty=2)
 abline(2,0,lty=2)
 abline(0,0,lty=2)
 
-hist(m.residuo[,7],probability=TRUE,xlab="resíduo studentizado",main="Histograma dos Residuos",ylab="densidade")
+hist(m.residuo[,7],probability=TRUE,xlab="Res. Stud.",main = "", ylab="Densidade")
 
-qqPlot((m.residuo[,7]),dist="norm",mean=0,sd=1,col.lines=1,grid="FALSE",xlab="quantil da N(0,1)",ylab=paste("quantil da distribuição do resíduo studentizado"),cex=1.2,id.cex=1.2)
+qqPlot((m.residuo[,7]),dist="norm",mean=0,sd=1,col.lines=1,grid="FALSE",xlab="Quantil da N(0,1)",ylab=paste("Quantil da Dist. do Res. Stud."),cex=1.2,id.cex=1.2)
 
 ```
+
+#Conclusão
+  Feitas a devida ressalva de que o modelo escolhido como base para as análises nao se ajustou bem aos dados, e considerando validos os resultados através dele obtidos, concluimos, por meio dos testes de igualdade de médias, que as espécies Torrens e Carteri diferem, em média, nas características Comprimento da Asa, Comprimento do 3º palpo e Comprimento do 4º palpo. Esta conclusão está de acordo com a conjectura feita através da análise descritiva dos dados.
