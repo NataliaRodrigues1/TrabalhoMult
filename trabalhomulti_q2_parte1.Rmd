@@ -1,0 +1,315 @@
+---
+title: ''
+geometry: left=18mm, right=19mm, top=24mm, bottom=25mm
+header-includes:
+- \usepackage{setspace}
+- \usepackage{pslatex}
+- \usepackage{subfigure}
+- \usepackage{subfigmat}
+- \usepackage[portuguese]{babel}
+- \usepackage{indentfirst}
+- \usepackage{float}
+output:
+  pdf_document:
+    fig_caption: yes
+    number_sections: yes
+  html_document: default
+  mainfont: Times New Roman
+  fig_caption: yes
+setspace: dublespacing
+fontsize: 10pt
+---
+\onehalfspacing
+
+\newpage
+
+\renewcommand*\contentsname{Sumário Questão 2}
+\tableofcontents
+
+\thispagestyle{empty}
+
+\newpage
+
+\setcounter{page}{1}
+
+\doublespace
+
+\newpage
+
+#Introdução
+
+\quad Os dados foram obtidos do arquivo moscas.txt, extraído do site http://www.ime.unicamp.br/~cnaber/Moscas.txt. Este se refere a sete variáveis medidas em duas espécies das moscas chamadas bitting fly (Leptoconops carteri e Leptoconops torrens), sendo elas espécie (0 - Leptoconops torrens e 1- Leptoconops carteri), comprimento da asa, largura da asa, comprimento do terceiro palpo, largura do terceiro palpo, comprimento do quarto palpo, comprimento do 12º segmento da antena e comprimento do 13º segmento da antena. Para ser mais eficiente, essas variáveis foram renomeadas como sendo: Especie (0 - torrens e 1- carteri), C.Asa, L.Asa, C3p, L3p, C4p, C12a e C13a, respectivamente.
+
+\quad Estas duas espécies são tão semelhantes (Johson e Wichern (2007)) que chegaram a ser consideradas, pelos pesquisadores, como uma uníca espécie. Sendo assim, objetivo do estudo é comparar as duas espécies de moscas em relação as variáveis citadas acima para saber se há diferença entre esses dois grupos. Neste relatório empregaremos a metodologia de componentes principais a fim de construir, através de transformações lineares (Azevedo 2017), variáveis não correlacionadas que retenham a maior parte da estrutura de variabilidade e correlação das variáveis originais e utiliza-las para identificar a existência ou não de diferença.
+ 
+```{r, lendo os dados, echo=FALSE, warning=FALSE, message=FALSE}
+library(car)
+library(MASS)
+library(plyr)
+library(gridExtra)
+library(ggplot2)
+library(xtable)
+library(GGally)
+library(gplots)
+dados <- read.table("C:/Users/naatr/Documents/Análise Multivariada/Trabalho/Parte1/TrabalhoMultParte1/moscas.csv", header = TRUE, sep = ";")
+attach(dados)
+Especie <- ifelse( Especie == "Torrens", 0, 1)
+especie <- dados[,1]
+n <- nrow(dados)
+mx <- as.matrix(dados[,2:8])
+nvar <- 7
+inames <- c("comprimento da asa","largura da asa","comprimento do 3 palpo","largura do 3 palpo","comprimento do 2 palpo","comprimento do 12 segmento da antena", "comprimento do 13 segmento da antena")
+dadosd <- dados[,2:8]
+```
+
+
+#Análise Descritiva
+
+\quad A Figura 1 apresenta os autovalores das sete componentes e indica que a partir da componente 3 a variância de cada componente é parecida, ou seja, as componentes 4, 5, 6 e 7, contribuem muito pouco para o percentual de variância explicada acumulada. A tabela 1 mostra os valores dos desvios padrões, PVE (proporção da variância explicada) e PVEA (proporção da variância explicada acumulada) das componentes e é possível notar que 77% da variabilidade dos dados originais é explicada pelas 3 primeiras componentes, por este motivo apenas estas 3 setão consideradas a fim de análise.
+  
+\begin{table}[h!]
+\centering
+\caption{Desvios padrão, proporção da variância explicada (PVE) e proporção da variância explicada acumulada (PVEA) das componentes principais}
+\label{my-label}
+\begin{tabular}{llllllll}
+\hline
+              & CP1 & CP2 & CP3 & CP4 & CP5 & CP6 & CP7 \\ \hline
+Desvio Padrão & 1,711  & 1,242  & 0,948  & 0,773  & 0,721  & 0,579  & 0,418  \\
+PVE           & 0,418  & 0,220  & 0,128  & 0,085  & 0,074  & 0,048  & 0,025  \\
+PVEA          & 0,418  & 0,639  & 0,767  & 0,853  & 0,927  & 0,975  & 1,000  \\ \hline
+\end{tabular}
+\end{table}
+
+```{r, análise de Componentes Principais via Matriz de Correlações,fig.cap="Gráfico de autovalores das componentes principais", echo=FALSE}
+dadosaux <- dados
+p <- ncol(dadosd)
+m.cor <- cor(dadosd)
+aut.val <-  eigen(m.cor)$values
+aut.vec <- (eigen(m.cor)$vectors)
+m.aut.val <- t(matrix(aut.val,p,p))
+result.cp.cor <- princomp(dadosd,cor=TRUE)
+corr.cp.cor <- aut.vec*sqrt(m.aut.val)
+comprin <- summary(result.cp.cor) # usamos só 3 componentes, que já cobre quase 77% da variância
+screeplot(result.cp.cor,type=c("lines"),main="",cex=1.2,cex.lab=1.2,cex.main=1.2)
+```
+
+\newpage
+
+\quad A tabela 2, por sua vez, apresenta os coeficientes das três primeiras componentes principais e correlações com cada variável (entre parênteses) e através dela concluí-se que todas as variáveis estão bem representadas e correlacionadas com pelo menos uma das componentes consideradas. Pode-se, também, utilizar as informações da tabela para fazer uma interpretação das componentes. Neste casso diz-se que a componente 1 é um escore ponderado entre todas as variáveis, que a componente 2 é um contraste entre C12a  e C13a e as demais variáveis e que a terceira componente é um contrate entre C3p e C4p e L.Asa e L3p.
+
+\begin{table}[h!]
+\centering
+\caption{Coeficientes das três primeiras componentes principais e correlações com cada variável(entre parênteses)}
+\label{my-label}
+\begin{tabular}{cccc}
+\hline
+Variável & Componente 1 & Componente 2  & Componente 3 \\ \hline
+C.Asa       & -0,49 (-0,84)         & -0,08 (-0,10) & 0,09 (0,08)       \\
+L.Asa     & -0,42 (-0,72)         & -0,18 (-0,22) & 0,30 (-0,28)        \\
+C3p     & -0,32 (-0,54)         & -0,30 (-0,37) & -0,65 (0,61)          \\
+L3p      & -0,32 (-0,55)         & -0,21 (-0,26) & 0,67 (-0,64)          \\
+C4p      & -0,37 (0,64)          & -0,36 (-0,44) & -0,15 (0,15)          \\
+C12a     & -0,35(-0,60)          & 0,58 (-0,72)  & 0,04 (0,04)           \\
+C13a     & -0,34 (-0,58)         & 0,60 (-0,75)  & 0,07 (0,07)           \\ 
+\hline
+\end{tabular}
+\end{table}
+
+\quad Na figura 2 tem-se os gráficos de dispersão entre as componentes, por grupo. Nota-se que os valores referentes à espécie torrens tendem a se manter em torno de zero enquanto a espécie carteri não segue um padrão especifico. Além disso observa-se que, em geral, os pontos cinzas aparecem acima dos pontos pretos indicando que o grupo torrens apresenta valores mais altos do que Carteri.
+
+```{r, echo=FALSE, fig.cap="Gráfico de dispersão das Componentes principais 1, 2 e 3 para as espécies Torrens e Carteri"}
+cp1 <-  cbind((result.cp.cor$scores)[,1])
+cp2 <-  cbind((result.cp.cor$scores)[,2])
+cp3 <- cbind((result.cp.cor$scores)[,3])
+
+# dispersão entre as componentes
+especie <- as.character(dadosaux[,1]) 
+cp3 <- -1*cp3
+my_cols <- c("black", "ivory4")
+pairs(data.frame(cp1,cp2,cp3), col=my_cols[factor(especie)], pch = 16, upper.panel = NULL)
+par(xpd=TRUE)
+legend(0.85,0.7,unique(dados$Especie), fill=c("ivory4", "black"))
+object = prcomp(dados[,2:8], center = T, scale. = T)
+cp3 <- cbind((result.cp.cor$scores)[,3])
+```
+
+\newpage
+
+\quad Os boxplots da figura 3, mostram que a espécie Torrens possui valores maiores que a espécie Carteri nas três componentes tendo, em todas elas, seu primeiro quartil maior que a mediana do grupo Carteri. Apesar disso, Carteri apresenta um variabilidade maior para as componetens 1 e 2 e conta com a presença de outliers em todas elas.
+	
+
+```{r, echo=FALSE, fig.cap="Boxplots das componentes principais 1, 2 e 3", eval=FALSE}
+# Por grupo
+par(mfrow=c(1,3))
+boxplot(cp1~especie,cex=1.2,cex.lab=1.2,xlab="CP1")
+boxplot(cp2~especie,cex=1.2,cex.lab=1.2,xlab="CP2")
+boxplot(cp3~especie,cex=1.2,cex.lab=1.2,xlab="CP3")
+```
+
+\begin{figure}[!htb]
+\centering
+\includegraphics{boxplots.png}
+\caption{Boxplots para as distribuições das componentes 1, 2 e 3 por espécie}
+\label{Rotulo}
+\end{figure}
+
+```{r,echo=FALSE, fig.height=8, fig.cap="Histogramas das componentes principais 1, 2 e 3", eval=FALSE}
+#cp3 <- -1*cp3
+par(mfrow=c(3,2))
+hist(cp1[especie=="Torrens"],probability=TRUE,main="CP1",xlab="",ylab="")
+hist(cp1[especie=="Carteri"],probability=TRUE,main="CP1",xlab="",ylab="")
+hist(cp2[especie=="Torrens"],probability=TRUE,main="CP2",xlab="",ylab="")
+hist(cp2[especie=="Carteri"],probability=TRUE,main="CP2",xlab="",ylab="")
+hist(cp3[especie=="Torrens"],probability=TRUE,main="CP3",xlab="",ylab="")
+hist(cp3[especie=="Carteri"],probability=TRUE,main="CP3",xlab="",ylab="")
+```
+
+\quad Os gráfico de quantis-quantis com envelopes das componentes por espécie encontram-se na figura 4 e através deles é possivel observar que, os gráficos para a espécie Carteri apresentam claras tendências, como por exemplo uma convexidade na componente 2 e cinco pontos fora dos envelope para a componente 1. Para o grupo Torrens, existe um ponto aberrante bastante evidente na componente dois e apesar de não haver pontos fora dos envelopes para a componente 1, a tendêndcia em formato de "\textbf{S}" é explícita e também indica uma possível fuga da normalidade. Sendo assim, a conclusão é de que, para nenhuma das compontes, em nenhuma das espécies, a suposição de normalidade parece razoavel.
+
+```{r, echo=FALSE, fig.height=8, fig.cap="Gráfico de quantis-quantis com envelopes das componentes por espécie"}
+par(mfrow=c(3,2))
+qqPlot(scale(cp1[especie=="Torrens"]),dist="norm",mean=0,sd=1,col.lines=1,grid="FALSE",xlab="quantil da N(0,1)",ylab="CP1",cex=1.2,id.cex=1.2,main="Torrens")
+qqPlot(scale(cp1[especie=="Carteri"]),dist="norm",mean=0,sd=1,col.lines=1,grid="FALSE",xlab="quantil da N(0,1)",ylab="CP1",cex=1.2,id.cex=1.2,main="Carteri")
+
+qqPlot(scale(cp2[especie=="Torrens"]),dist="norm",mean=0,sd=1,col.lines=1,grid="FALSE",xlab="quantil da N(0,1)",ylab="CP2",cex=1.2,id.cex=1.2,main="")
+qqPlot(scale(cp2[especie=="Carteri"]),dist="norm",mean=0,sd=1,col.lines=1,grid="FALSE",xlab="quantil da N(0,1)",ylab="CP2",cex=1.2,id.cex=1.2,main="")
+
+qqPlot(scale(cp3[especie=="Torrens"]),dist="norm",mean=0,sd=1,col.lines=1,grid="FALSE",xlab="quantil da N(0,1)",ylab="CP3",cex=1.2,id.cex=1.2,main="")
+qqPlot(scale(cp3[especie=="Carteri"]),dist="norm",mean=0,sd=1,col.lines=1,grid="FALSE",xlab="quantil da N(0,1)",ylab="CP3",cex=1.2,id.cex=1.2,main="")
+```
+ 
+\quad Portanto, ao final da análise descritiva, pode-se conjecturar que exista diferença entre as espécies e que, em geral, Torrens apresenta valores maiores do que Carteri.Além disso também é possivel conjecturar que os dados não assumem normalidade.
+ 
+\newpage
+ 
+#Análise Inferencial
+
+\quad Considerando o fato já anteriormente mensionado de que a componente 1 pode ser interpretada como um escore ponderado entre todas as variáveis, foi ajustado um modelo de regressão linear normal para essa componente. O modelo considerado foi: 
+
+\begin{center}
+$$Y_{ij}= \mu_1 + \alpha_{i} + \epsilon_{ij} \ com \ \alpha_{1}=0 \ e \ \mathbf{\epsilon_{ij}} \sim N(0,{\sigma})$$
+\end{center}
+onde:
+\begin{itemize}
+\item i = 1,2 (grupo, 1-Torrens, 2-Carteri)
+\item j = 1, 2,..., 35 (indivíduo)
+\end{itemize}
+
+\quad Como o parâmetro $\alpha_2$ representa a diferença entre as médias do grupo Torrens e Carteri na componente 1, há interesse em testar a significancia do mesmo. Para isso, utilizou-se um teste t usual ($H_0 : \alpha_2 = 0 \ vs \ H_1 : \alpha_2 \neq 0$) e os resultados são mostrados na tabela 3.
+
+``` {r, análise Residual das componentes principais, echo=FALSE}
+par(mfrow = c(1,1))
+#biplot.psych {psych}
+especief<- ifelse(especie == "Torrens", 0, 1)
+# Componente 1
+cor1 <- cor(cp1)
+fit.model1 <- lm(cp1~especief)
+m.residuo1 <- fit.model1$residuals
+m.X.c1 <- as.matrix(model.matrix(fit.model1))
+auxres.c1 <- diag((diag(n) - m.X.c1%*%solve(t(m.X.c1)%*%m.X.c1)%*%t(m.X.c1)))
+m.residuo1 <- m.residuo1/(sqrt((matrix(auxres.c1,70,1))%*%diag(diag(cor1))))
+m.ajustado1 <- fitted.values(fit.model1)
+# Componente 2
+#fit.model2 <- lm(cp2~especief)
+#m.residuo2 <- fit.model2$residuals
+# Componente 3
+#fit.model3 <- lm(cp3~especief)
+#m.residuo3 <- fit.model3$residuals
+```
+
+\begin{table}[!h]
+\centering
+\caption{Estimativas dos parâmetros do modelo de regressão para a componente 1}
+\begin{tabular}{rlrrrrrrrr}
+  \hline
+Componente & Parâmetro & Estimativa & Erro Padrão & Valor F & p-valor \\ 
+  \hline
+  CP1 & $\mu_1$  & 0,51 & 0,28 & 0,84 & 0,07 \\ 
+   & $\alpha_1$ & -1,03 & 0,39 & -2,60 & 0,01  \\ 
+  \hline
+\end{tabular}
+\end{table}
+
+
+\quad Como observado na tabela acima, considerando-se um teste de nível de significância igual a 5%, tem-se que o parâmetro $\alpha_2$ é diferente de zero e, portanto, estatísticamente significativo. Sendo assim, conclui-se que as espécies são diferentes. Apesar disso, nota-se que os intervalos de confiança para as médias preditas pelo modelo se inteseptam (tabela 4), o que não era esperado uma vez que a igualdade de médias foi rejeitada. A tabela 4 ainda mostra que o grupo carteri tem valores menores que Torrens.
+
+\begin{table}[!h]
+\centering
+\caption{Médias preditas e intervalos de confiança por espécie}
+\begin{tabular}{rrrrrrrrr}
+  \hline
+Espécie & Estimativa & Erro Padrão & IC \\ 
+  \hline
+Torrens & 0,51  & 0,28 & [-0,04;1,07] \\ 
+Carteri & -0,51 & 0,28 & [-1,07;0.04]  \\ 
+  \hline
+\end{tabular}
+\end{table}
+
+\newpage
+
+\quad Fazendo análise dos resíduos, nota-se que as suposições do modelo de normalidade e homocedasticade não são satisfeitas. A figura 5 apresentam os gráficos de diagnóstico para as componentes 1. Observando o gráfico "índice x resíduo studentizado", tem-se 4 pontos fora dos limites de confiança e é possivel detectar que índices maiores estão associados a maior variabilidade o que indica dependência. Além disso, pelo gráfico "valores ajustados x resíduo studentizado", as variâncias residuais não parecem constantes, indicando fuga da suposição de heterocedasticidade e a suposição de normalidade também não é adequada uma vez que o histograma apresenta uma assimetria positiva e há um padrão nos gráficos de quantil da Normal(0,1) além de algumas observações estarem fora do envelope.
+
+\begin{figure}[!h]
+\centering
+\includegraphics{AnaliseResiduo.png}
+\caption{Gráficos de Resíduos para a componente 1}
+\label{Rotulo}
+\end{figure}
+
+
+```{r, echo=FALSE, fig.cap="Gráfico de diagnóstico do modelo para a componente 1", eval=FALSE}
+par(mfrow =c(2,2))
+plot(m.residuo1,ylim=c(min(-3,min(m.residuo1)),max(3,max(m.residuo1))),xlab="índice",ylab="resíduo studentizado")
+abline(-2,0,lty=2)
+abline(2,0,lty=2)
+abline(0,0,lty=2)
+
+plot(m.ajustado1,m.residuo1,ylim=c(min(-3,min(m.residuo1)),max(3,max(m.residuo1))),xlab="valor ajustado",ylab="resíduo studentizado")
+abline(-2,0,lty=2)
+abline(2,0,lty=2)
+abline(0,0,lty=2)
+
+hist(m.residuo1, probability=TRUE, xlim = c(-4,4), ylim = c(0, 0.4),xlab="resíduo studentizado",ylab="densidade", main = "")
+
+qqPlot((m.residuo1),dist="norm",mean=0,sd=1,col.lines=1,grid="FALSE",xlab="quantil da N(0,1)",ylab=paste("quantil da distribuição do resíduo studentizado"),cex=1.2,id.cex=1.2)
+```
+
+\newpage
+
+\quad Na figura 6 apresenta-se o gráfico de biplot para a combinação das três componentes, a análise do primeiro gráfico, biplot entre as componentes 1 e 2, indica que as variáveis CA, LA, CP3, LP3 e CP4 possuem uma correlação positiva entre si, já as demais variáveis, SA12 e SA13, são intensamente correlacionadas entre si, porém não são correlacionadas com as outras variáveis.
+
+\quad No segundo gráfico biplot, tem-se que as variáveis SA12, SA13, CA e CP4 são correlacionadas entre si, e não são correlacionadas com as demais variáveis (CP3, LA e LP3, que não são correlacionadas entre si).
+ 
+\quad No último gráfico, observa-se que as variáveis se dividem em 3 grupos não correlacionados. O primeiro grupo inclui as variáveis SA12 e SA13, que se correlacionam. Já o segundo contém as variáveis LP3 e LA (que são correlacionadas entre si). E por fim, o terceiro grupo abrange as variáveis CP4 e CP3 que não se correlacionam.
+ 
+\quad Esta figura, também permite concluir que a espécie torrens tende a se manter abaixo da média para as variáveis C.Asa, C3p e C4p e a espécie Carteri apresenta valores mais altos para estas variáveis. Tal conclusão vai ao encontro com aquela feita na questão 1, ou seja, corrobora os resultados nela obtidos. 
+ 
+\begin{figure}[!htb]
+\centering
+\includegraphics{biplots.png}
+\caption{Biplots para a combinação das três componentes}
+\label{Rotulo}
+\end{figure}
+
+\newpage
+
+```{r, echo=FALSE, fig.width=7, fig.height=4, eval=FALSE}
+bla <-NULL
+bla[dados[,1]=="Torrens"]<-"To"
+bla[dados[,1]=="Carteri"]<-"Ca"
+biplot(result.cp.cor,xlabs=bla)
+biplot(result.cp.cor,c(1,3),xlabs=bla)
+biplot(result.cp.cor,2:3,xlabs=bla)
+```
+
+#Conclusão
+
+\quad Feita a devida ressalva de que o modelo escolhido como base para as análises nao se ajustou bem aos dados, e considerando válidos os resultados através dele obtidos, conclui-se que as espécies Torrens e Carteri apresentma diferenças em relação à componente 1. Além disso, a análise inferencial valida as conjecturas feitas após a análise descritiva e, por fim, a análise dos biplots levou a conclusões semelhantes àquelas tidas na questão 1 o que corrobora o resultado obtido.
+
+#Referências bibliográficas 
+
+1. AZEVEDO, C. L. N. (2017). **Notas de Aula - Métodos em Análise Multivariada**. Disponível em < http://www.ime.unicamp.br/~cnaber/Material_AM_2S_2017.htm >. 
+2. JOHNSON, R. A., WICHERN, D. W. (2002). **Applied Multivariate Statistical Analysis**, $5^a$ edição, Upper Saddle River, NJ: Prentice-Hall. 
+3. R CORE TEAM (2017). **R: A language and environment for statistical computing**. R Foundation for Statistical Computing, Viena,
+  Áustria. Disponível em < https://www.R-project.org/ >.
